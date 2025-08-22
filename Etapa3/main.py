@@ -67,7 +67,7 @@ def create_obstacles(map) -> list:
 
     return node_list
 
-def remove_edges_from_node(node) -> str:
+def remove_edges_from_node(node):
     edges = list(graph.edges(node))
     graph.remove_edges_from(edges)
 
