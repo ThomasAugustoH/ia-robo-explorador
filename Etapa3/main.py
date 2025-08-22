@@ -1,62 +1,75 @@
 import networkx as nx
 import matplotlib.pyplot as plt
 
-def main():
-    grid = nx.grid_2d_graph(10, 10)
-   
-    remove_nodes(grid, 1)
-    path = create_path(grid, (0,9), (7,2))
-    print_graph(grid, path)
+graph = nx.grid_2d_graph(10, 10)
 
-def create_path(graph, source, destination) -> list:
-    path = find_path(graph, source, destination)
-    colored_path = color_path(graph, path)
+def main():
+    obstacle_list = create_obstacles(1)
+    path = create_path((0,9), (7,2), obstacle_list)
+    print_graph(path)
+
+def create_path(source, destination, obstacles) -> list:
+    path = find_path(source, destination)
+    colored_path = color_path(path, obstacles)
     return colored_path
 
-def find_path(graph, source, destination) -> list:
+def find_path(source, destination) -> list:
     path = nx.dijkstra_path(graph, source, destination)
     return path
 
-def color_path(graph, path) -> list:
+def color_path(path, obstacles) -> list:
     color_map = []
     for node in graph:
         if node in path:
-            color_map.append('#F08C01')
-        else:
+            color_map.append('#aaeeaa')
+        elif node in obstacles:
+            color_map.append("#225C95")
+        else:   
             color_map.append('#DDDDDD')
     return color_map
 
-def print_graph(graph, color_map):
+def print_graph(color_map):
     pos = {node: node for node in graph.nodes()}
-    nx.draw_networkx(graph, pos=pos, node_color=color_map, with_labels=False)
+    nx.draw_networkx(graph, pos=pos, node_color=color_map, node_shape='s', with_labels=False)
     plt.tight_layout()
     plt.axis("off")
     plt.show()
 
-def remove_nodes(graph, map):
+def create_obstacles(map) -> list:
+    node_list = []
+    
     match map:
         case 1:
-            graph.remove_node((5, 0))
-            graph.remove_node((5, 1))
-            graph.remove_node((7, 1))
-            graph.remove_node((8, 1))
-            graph.remove_node((5, 2))
-            graph.remove_node((8, 2))
-            graph.remove_node((5, 3))
-            graph.remove_node((8, 3))
-            graph.remove_node((3, 4))
-            graph.remove_node((5, 4))
-            graph.remove_node((6, 4))
-            graph.remove_node((7, 4))
-            graph.remove_node((8, 4))
-            graph.remove_node((1, 5))
-            graph.remove_node((6, 5))
-            graph.remove_node((2, 6))
-            graph.remove_node((5, 6))
-            graph.remove_node((2, 7))
-            graph.remove_node((0, 8))
-            graph.remove_node((3, 8))
-            graph.remove_node((4, 9))
+            node_list.append((5, 0))
+            node_list.append((5, 1))
+            node_list.append((7, 1))
+            node_list.append((8, 1))
+            node_list.append((5, 2))
+            node_list.append((8, 2))
+            node_list.append((5, 3))
+            node_list.append((8, 3))
+            node_list.append((3, 4))
+            node_list.append((5, 4))
+            node_list.append((6, 4))
+            node_list.append((7, 4))
+            node_list.append((8, 4))
+            node_list.append((1, 5))
+            node_list.append((6, 5))
+            node_list.append((2, 6))
+            node_list.append((5, 6))
+            node_list.append((2, 7))
+            node_list.append((0, 8))
+            node_list.append((3, 8))
+            node_list.append((4, 9))
+
+    for node in node_list:
+        remove_edges_from_node(node)
+
+    return node_list
+
+def remove_edges_from_node(node) -> str:
+    edges = list(graph.edges(node))
+    graph.remove_edges_from(edges)
 
 if __name__ == "__main__":
     main()
