@@ -1,5 +1,4 @@
 import random
-from time import sleep
 import networkx as nx
 import matplotlib.pyplot as plt
 from collections import deque
@@ -242,12 +241,12 @@ def get_east_node(look_for_priority = False) -> tuple:
 def get_south_node(look_for_priority = False) -> tuple:
     next_node = (robot_pos[0], robot_pos[1] - 1)
     if look_for_priority:
-        if next_node in graph.nodes() and next_node not in obstacle_list and flags[tuple(next_node)] == "priority":
+        if next_node in graph.nodes() and flags[tuple(next_node)] == "priority":
             return next_node
         else:
             return ()
     else: 
-        if next_node in graph.nodes() and next_node not in obstacle_list and flags[tuple(next_node)] == "unvisited":
+        if next_node in graph.nodes() and flags[tuple(next_node)] == "unvisited":
             return next_node
         else:
             return ()
@@ -255,12 +254,12 @@ def get_south_node(look_for_priority = False) -> tuple:
 def get_west_node(look_for_priority = False) -> tuple:
     next_node = (robot_pos[0] - 1, robot_pos[1])
     if look_for_priority:
-        if next_node in graph.nodes() and next_node not in obstacle_list and flags[tuple(next_node)] == "priority":
+        if next_node in graph.nodes() and flags[tuple(next_node)] == "priority":
             return next_node
         else:
             return ()
     else: 
-        if next_node in graph.nodes() and next_node not in obstacle_list and flags[tuple(next_node)] == "unvisited":
+        if next_node in graph.nodes() and flags[tuple(next_node)] == "unvisited":
             return next_node
         else:
             return ()
@@ -268,12 +267,12 @@ def get_west_node(look_for_priority = False) -> tuple:
 def get_north_node(look_for_priority = False) -> tuple:
     next_node = (robot_pos[0], robot_pos[1] + 1)
     if look_for_priority:
-        if next_node in graph.nodes() and next_node not in obstacle_list and flags[tuple(next_node)] == "priority":
+        if next_node in graph.nodes() and flags[tuple(next_node)] == "priority":
             return next_node
         else:
             return ()
     else: 
-        if next_node in graph.nodes() and next_node not in obstacle_list and flags[tuple(next_node)] == "unvisited":
+        if next_node in graph.nodes() and flags[tuple(next_node)] == "unvisited":
             return next_node
         else:
             return ()
