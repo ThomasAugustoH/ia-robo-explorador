@@ -52,7 +52,7 @@ class Robot:
     def __move_to(self, node):
         for neighbor in self.robot_memory.neighbors(self.current_position):
             if self.get_node_status(neighbor) == 'unvisited':
-                self.set_node_status(neighbor, 'unvisited') #
+                self.set_node_status(neighbor, 'priority')
         if self.get_node_status(node) == 'visited':
             self.repeated_spaces += 1
         self.set_node_status(self.current_position, 'visited')
@@ -81,7 +81,7 @@ class Robot:
                     if self.get_node_status(neighbor) == 'priority':
                         return neighbor
                     
-                    if self.get_node_status(neighbor) == 'unvisited':
+                    if self.get_node_status(neighbor) == 'unvisited' and unvisited_node == []:
                         unvisited_node = list(neighbor)
                     
                     queue.append(neighbor)
