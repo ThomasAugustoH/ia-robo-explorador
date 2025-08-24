@@ -84,28 +84,26 @@ def create_robot():
     
     
 
-
-
 ### AUXILIARY FUNCTIONS ---------------------------------------------------------------------------
 
 def update_graph(graph):
     plt.close()
     global graph_colors
     global robot
-    flags = robot.get_robot_flags()
+    robot_memory = robot.get_robot_memory()
 
     pos = {node: node for node in graph.nodes()}
     node_colors_map = []
     for node in graph.nodes():
         if tuple(robot.get_current_position()) == node:
             node_colors_map.append(graph_colors.get("current_pos"))
-        elif flags[node] == "visited":
+        elif robot_memory.nodes[node]['status']  == "visited":
             node_colors_map.append(graph_colors.get("visited"))
-        elif flags[node] == "unvisited":
+        elif robot_memory.nodes[node]['status'] == "unvisited":
             node_colors_map.append(graph_colors.get("unvisited"))
-        elif flags[node] == "priority":
+        elif robot_memory.nodes[node]['status'] == "priority":
             node_colors_map.append(graph_colors.get("priority"))
-        elif flags[node] == "obstacle":
+        elif robot_memory.nodes[node]['status'] == "obstacle":
             node_colors_map.append(graph_colors.get("obstacle"))
         else:
             node_colors_map.append(graph_colors.get("default"))

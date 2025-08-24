@@ -7,24 +7,25 @@ class Robot:
         self.robot_memory = nx.empty_graph()
         self.current_position = (starting_node)
         self.repeated_spaces = 0
-        self.flags = {}
         self.graph = graph
 
-        self.robot_memory.add_node(tuple(self.current_position))
-        self.flags[tuple(self.current_position)] = "visited"
+        self.robot_memory.add_node(self.current_position, status="visited")
         self.update_neighbors()
 
     def get_robot_memory(self):
         return self.robot_memory
-
-    def get_robot_flags(self):
-        return self.flags
     
     def get_current_position(self):
         return self.current_position
     
     def get_repeated_spaces(self):
         return self.repeated_spaces
+    
+    def set_node_status(self, node, status):
+        self.robot_memory.nodes[node]['status'] = status
+
+    def get_node_status(self, node) -> str:
+        return self.robot_memory.nodes[node]['status']
 
     def move(self) -> bool:
         move_sequence = []
@@ -45,13 +46,13 @@ class Robot:
             return False
 
         for node in move_sequence:
-            for neighbors in self.robot_memory.neighbors(tuple(self.current_position)):
-                if self.flags[neighbors] == "unvisited":
-                    self.flags[neighbors] = "priority"
-            if self.flags[node] == "visited":
+            for neighbor in self.robot_memory.neighbors(self.current_position):
+                if self.get_node_status(neighbor) == 'unvisited':
+                    self.set_node_status(neighbor, 'priority')
+            if self.get_node_status(node) == "visited":
                 self.repeated_spaces += 1
-            self.current_position = list(node)
-            self.flags[node] = "visited"
+            self.current_position = node
+            self.set_node_status(node, 'visited')
             self.update_neighbors()
 
         return True
@@ -62,8 +63,8 @@ class Robot:
         return path
 
     def find_closest_unvisited_node(self) -> tuple:
-        queue = deque([(tuple(self.current_position)), 0])
-        searched_nodes = {tuple(self.current_position)}
+        queue = deque([(self.current_position), 0])
+        searched_nodes = {self.current_position}
         unvisited_node = []
 
         while queue:
@@ -74,10 +75,10 @@ class Robot:
                 if neighbor not in searched_nodes:
                     searched_nodes.add(neighbor)
 
-                    if self.flags[neighbor] == "priority":
+                    if self.get_node_status(neighbor) == "priority":
                         return neighbor
                     
-                    if self.flags[neighbor] == "unvisited":
+                    if self.get_node_status(neighbor) == "unvisited":
                         unvisited_node = list(neighbor)
                     
                     queue.append(neighbor)
@@ -86,7 +87,7 @@ class Robot:
         return tuple(unvisited_node)
 
     def find_path_to(self, destination) -> list:
-        origin = tuple(self.current_position)
+        origin = self.current_position
         queue_path = deque([origin])
         predecessors = {node: None for node in self.robot_memory.nodes}
         visited_path = {origin}
@@ -127,15 +128,14 @@ class Robot:
 
     def update_neighbor(self, node):
         if node in self.graph.nodes() and node not in self.robot_memory.nodes():
-                self.robot_memory.add_node(node)
-                if nx.has_path(self.graph, tuple(self.current_position), node):
-                    self.robot_memory.add_edge(tuple(self.current_position), node)
+                self.robot_memory.add_node(node, status="unvisited")
+                if nx.has_path(self.graph, self.current_position, node):
+                    self.robot_memory.add_edge(self.current_position, node)
                     for neighbor in self.graph.neighbors(node):
                         if nx.has_path(self.graph, neighbor, node) and neighbor in self.robot_memory.nodes():
                             self.robot_memory.add_edge(neighbor, node)
-                    self.flags[tuple(node)] = "unvisited"
                 else:
-                    self.flags[tuple(node)] = "obstacle"
+                    self.set_node_status(node, 'obstacle')
 
     def get_next_move(self, side, look_for_priority = False) -> tuple:
         rotation_offset = 2
@@ -175,12 +175,12 @@ class Robot:
 
         next_node = (self.current_position[0] + x_offset, self.current_position[1] + y_offset)
         if look_for_priority:
-            if next_node in self.graph.nodes() and self.flags[tuple(next_node)] == "priority":
+            if next_node in self.graph.nodes() and self.get_node_status(next_node) == "priority":
                 return next_node
             else:
                 return ()
         else: 
-            if next_node in self.graph.nodes() and self.flags[tuple(next_node)] == "unvisited":
+            if next_node in self.graph.nodes() and self.get_node_status(next_node) == "unvisited":
                 return next_node
             else:
                 return ()
