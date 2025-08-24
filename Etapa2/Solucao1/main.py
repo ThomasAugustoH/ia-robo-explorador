@@ -10,7 +10,7 @@ obstacle_list = []
 repeated_spaces = 0
 draw_graph = False
 graph_colors = {
-    "current_pos": "#FF7777",
+    "current": "#FF7777",
     "visited": "#333333",
     "unvisited": "#AAAAAA",
     "priority": "#AAEEAA",
@@ -90,20 +90,19 @@ def update_graph(graph):
     plt.close()
     global graph_colors
     global robot
-    robot_memory = robot.get_robot_memory()
 
     pos = {node: node for node in graph.nodes()}
     node_colors_map = []
     for node in graph.nodes():
-        if tuple(robot.get_current_position()) == node:
-            node_colors_map.append(graph_colors.get("current_pos"))
-        elif robot_memory.nodes[node]['status']  == "visited":
+        if robot.get_node_status(node)  == 'current':
+            node_colors_map.append(graph_colors.get("current"))
+        elif robot.get_node_status(node)  == "visited":
             node_colors_map.append(graph_colors.get("visited"))
-        elif robot_memory.nodes[node]['status'] == "unvisited":
+        elif robot.get_node_status(node) == "unvisited":
             node_colors_map.append(graph_colors.get("unvisited"))
-        elif robot_memory.nodes[node]['status'] == "priority":
+        elif robot.get_node_status(node) == "priority":
             node_colors_map.append(graph_colors.get("priority"))
-        elif robot_memory.nodes[node]['status'] == "obstacle":
+        elif robot.get_node_status(node) == "obstacle":
             node_colors_map.append(graph_colors.get("obstacle"))
         else:
             node_colors_map.append(graph_colors.get("default"))
