@@ -132,10 +132,10 @@ class Robot:
     def __update_neighbor(self, node):
         if node in self.graph.nodes() and node not in self.robot_memory.nodes():
                 self.robot_memory.add_node(node, status = 'unvisited')
-                if nx.has_path(self.graph, self.current_position, node):
+                if self.graph.has_edge(self.current_position, node):
                     self.robot_memory.add_edge(self.current_position, node, )
                     for neighbor in self.graph.neighbors(node):
-                        if nx.has_path(self.graph, neighbor, node) and neighbor in self.robot_memory.nodes():
+                        if self.graph.has_edge(neighbor, node) and neighbor in self.robot_memory.nodes():
                             self.robot_memory.add_edge(neighbor, node)
                 else:
                     self.set_node_status(node, 'obstacle')
