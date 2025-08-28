@@ -1,7 +1,6 @@
 import random
 import networkx as nx
 import matplotlib.pyplot as plt
-from collections import deque
 from robot import Robot
 
 class Environment:

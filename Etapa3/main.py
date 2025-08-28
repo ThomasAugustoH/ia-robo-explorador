@@ -14,7 +14,14 @@ def create_path(source, destination, obstacles) -> list:
     return colored_path
 
 def find_path(source, destination) -> list:
-    path = nx.dijkstra_path(graph, source, destination)
+    bfs_edges = list(nx.bfs_edges(graph, source))
+
+    parents = {v: u for u, v in bfs_edges}
+    path = [destination]
+    while path[-1] != source:
+        path.append(parents[path[-1]])
+    path.reverse()
+
     return path
 
 def color_path(path, obstacles) -> list:
