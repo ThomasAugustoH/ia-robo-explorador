@@ -16,7 +16,7 @@ class RobotGUI:
         self.rows, self.cols = 10, 10
         self.grid = [[0] * self.cols for _ in range(self.rows)]
         
-        # Posição inicial aleatória - como no seu código
+        # Posição inicial aleatória
         self.start_x = randint(0, self.cols - 1)
         self.start_y = randint(0, self.rows - 1)
         
