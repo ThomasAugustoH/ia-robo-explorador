@@ -20,7 +20,8 @@ class Environment:
         self.fig = None
         self.ax = None
         
-    def run_simulation(self) -> int:
+    def run_simulation(self, map_size=10) -> int:
+        self.map_size = map_size
         plt.ion()
         self.set_settings()
         self.generate_map()
@@ -49,7 +50,7 @@ class Environment:
         self.preloaded_map = False
 
     def generate_map(self):
-        self.map_graph = nx.grid_2d_graph(10, 10)
+        self.map_graph = nx.grid_2d_graph(self.map_size, self.map_size)
         self.obstacle_list = []
         for node in self.map_graph.nodes():
             self.map_graph.nodes[node]['status'] = 'undiscovered_path'
@@ -59,11 +60,11 @@ class Environment:
             self.obstacle_list = self.create_obstacles()
 
     def draw_map(self):
-        if not self.fig or not self.ax:
-            self.fig, self.ax = plt.subplots(figsize=(8, 8))
         if self.should_draw_map:
+            if not self.fig or not self.ax or not plt.fignum_exists(self.fig.number):
+                self.fig, self.ax = plt.subplots(figsize=(8, 8))
             self.update_graph()
-            plt.pause(1) 
+            plt.pause(1)
 
     def wait_input(self, message) -> bool:
         while (True):
@@ -100,7 +101,7 @@ class Environment:
             
     def update_graph(self):
         self.ax.clear()
-
+        
         self.robot_memory = self.robot.get_robot_memory()
         if self.draw_only_robot_memory:
             self.graph_to_draw = self.robot_memory
@@ -132,8 +133,8 @@ class Environment:
                     node_colors_map.append(self.graph_colors.get('undiscovered_obstacle'))
                 else:
                     node_colors_map.append(self.graph_colors.get("default"))
-        nx.draw_networkx(self.graph_to_draw, pos=pos, node_color=node_colors_map, node_shape='s', with_labels=False)
         self.ax.set_title(f"Passos redundantes: {self.robot.get_repeated_spaces()}")
+        nx.draw_networkx(self.graph_to_draw, pos=pos, node_color=node_colors_map, node_shape='s', with_labels=False)
         self.ax.axis("off")
         plt.tight_layout()
 
@@ -172,7 +173,9 @@ class Environment:
         return node_list
 
     def create_random_obstacles(self) -> list:
-        number_of_obstacles = random.randint(20, 30)
+        min_obstaculos = int(15/100 * pow(self.map_size, 2))
+        max_obstaculos = int(25/100 * pow(self.map_size, 2))
+        number_of_obstacles = random.randint(min_obstaculos, max_obstaculos)
         print(f"Gerando {number_of_obstacles} obstáculos")
         connected_components = 1
         created_objects = []

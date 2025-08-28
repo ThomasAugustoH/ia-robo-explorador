@@ -1,7 +1,3 @@
-import random
-import networkx as nx
-import matplotlib.pyplot as plt
-from collections import deque
 from environment import Environment
 
 
@@ -10,7 +6,8 @@ def main():
     total_passos, min_passos, max_passos, tentativas = 0, 999, 0, 1000
 
     for i in range(tentativas):
-        passos = environment.run_simulation()
+        passos = environment.run_simulation(10)
+        print(passos)
         total_passos += passos
         min_passos = min(min_passos, passos)
         max_passos = max(max_passos, passos)

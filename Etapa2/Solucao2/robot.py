@@ -38,7 +38,14 @@ class Robot:
         return False
         
     def __find_next_path(self):
-
+        for node in self.robot_memory.nodes():
+            if self.get_node_status(node) == 'priority':
+                self.current_path = self.__search_nodes(True)
+                if len(self.current_path) == 2:
+                    return
+                elif len(self.current_path) != 2:
+                    self.current_path = []
+                    break
         
         for i in range(12):
             if i < 4:
@@ -58,8 +65,7 @@ class Robot:
     def __move_to(self, node):
         for neighbor in self.robot_memory.neighbors(self.current_position):
             if self.get_node_status(neighbor) == 'unvisited':
-                #self.set_node_status(neighbor, 'priority')
-                self.set_node_status(neighbor, 'unvisited') #
+                self.set_node_status(neighbor, 'unvisited') 
         if self.get_node_status(node) == 'visited':
             self.repeated_spaces += 1
         self.set_node_status(self.current_position, 'visited')
@@ -67,16 +73,14 @@ class Robot:
         self.set_node_status(node, 'current')
         self.__update_neighbors()
 
-    def __search_nodes(self) -> list:
-        next_node = self.__find_closest_unvisited_node()
+    def __search_nodes(self, close_distance=False) -> list:
+        next_node = self.__find_closest_unvisited_node(close_distance)
         path = self.__find_path_to(next_node)
         return path
 
-    def __find_closest_unvisited_node(self) -> tuple:
+    def __find_closest_unvisited_node(self, close_distance) -> tuple:
         queue = deque([(self.current_position), 0])
         searched_nodes = {self.current_position}
-        unvisited_node = []
-        preferable_node = []
 
         while queue:
             current_node = queue.popleft()
@@ -86,15 +90,19 @@ class Robot:
                 if neighbor not in searched_nodes:
                     searched_nodes.add(neighbor)
 
-                    if self.get_node_status(neighbor) == 'priority' or self.get_node_status(neighbor) == 'preferable' or self.get_node_status(neighbor) == 'unvisited':
+                    if self.get_node_status(neighbor) == 'priority':
+                        return neighbor
+                    
+                    if self.get_node_status(neighbor) == 'preferable' and not close_distance:
+                        return neighbor
+                    
+                    if self.get_node_status(neighbor) == 'unvisited' and not close_distance:
                         return neighbor
                     
                     queue.append(neighbor)
                     queue.append(distance + 1)
 
-        if preferable_node != []:
-            return tuple(preferable_node)
-        return tuple(unvisited_node)
+        return []
 
     def __find_path_to(self, destination) -> list:
         origin = self.current_position
@@ -115,18 +123,16 @@ class Robot:
             visited_neighbors = []
             
             for neighbor in self.robot_memory.neighbors(current_node):
-                if self.get_node_status(neighbor) == 'unvisited':
+                if self.get_node_status(neighbor) in ['unvisited', 'preferable', 'priority']:
                     unvisited_neighbors.append(neighbor)
                 else:
                     visited_neighbors.append(neighbor)
 
-            # Prioritize unvisited neighbors
             for neighbor in unvisited_neighbors:
                 if neighbor not in predecessors:
                     predecessors[neighbor] = current_node
                     queue_path.append(neighbor)
             
-            # Then, consider already visited neighbors
             for neighbor in visited_neighbors:
                 if neighbor not in predecessors:
                     predecessors[neighbor] = current_node
@@ -178,6 +184,8 @@ class Robot:
 
         for i in range(4):
             next_node = self.__get_node_position(node, directions[i])
+            if not next_node in self.graph.nodes():
+                score += 2
             if next_node in self.robot_memory.nodes() and self.get_node_status(next_node) == 'obstacle':
                 score += 2
             if next_node in self.robot_memory.nodes() and (self.get_node_status(next_node) == 'visited' or next_node == self.current_position):
