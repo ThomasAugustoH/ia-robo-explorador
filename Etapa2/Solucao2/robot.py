@@ -41,9 +41,9 @@ class Robot:
         for node in self.robot_memory.nodes():
             if self.get_node_status(node) == 'priority':
                 self.current_path = self.__search_nodes(True)
-                if len(self.current_path) == 2:
+                if len(self.current_path) <= 2 and len(self.current_path) > 1:
                     return
-                elif len(self.current_path) != 2:
+                elif len(self.current_path) > 2:
                     self.current_path = []
                     break
         
@@ -65,7 +65,7 @@ class Robot:
     def __move_to(self, node):
         for neighbor in self.robot_memory.neighbors(self.current_position):
             if self.get_node_status(neighbor) == 'unvisited':
-                self.set_node_status(neighbor, 'unvisited') 
+                self.set_node_status(neighbor, 'unvisited')
         if self.get_node_status(node) == 'visited':
             self.repeated_spaces += 1
         self.set_node_status(self.current_position, 'visited')
@@ -181,15 +181,20 @@ class Robot:
     def __potential_dead_end(self, node) -> str:
         directions = ['EAST', 'SOUTH', 'WEST', 'NORTH']
         score = 0
+        obstacles = 0
+        unvisited = 0
 
         for i in range(4):
             next_node = self.__get_node_position(node, directions[i])
             if not next_node in self.graph.nodes():
                 score += 2
+                obstacles += 1
             if next_node in self.robot_memory.nodes() and self.get_node_status(next_node) == 'obstacle':
                 score += 2
+                obstacles += 1
             if next_node in self.robot_memory.nodes() and (self.get_node_status(next_node) == 'visited' or next_node == self.current_position):
                 score += 1
+                unvisited +=1 
             if score >= 4:
                 return "priority"
         if score >= 2:
