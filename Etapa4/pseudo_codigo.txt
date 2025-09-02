@@ -1,82 +1,46 @@
-caminho_mais_curto, custo = achar_caminho_mais_curto_e_peso(grafo, origem, destino)
+Programa principal:
+    path, cost <- shortest_path_and_cost(G, source, target)
+    Se path for vazio:
+        Imprimir "Não existe caminho entre source e target"
+    Senão:
+        Imprimir "Caminho mais curto:", path
+        Imprimir "Custo:", cost
 
-para i de 0 até caminho_mais_curto.comprimento - 2:
-    u <- caminho_mais_curto[i]
-    v <- caminho_mais_curto[i+1]
-    imprimir("aresta:", u, "->", v, "peso:", peso(u,v))
-fim para
+Função shortest_path_and_cost(G, source, target):
+    path <- dijkstra_shortest_path(G, source, target)
+    Se path for nulo:
+        Retornar vazio, infinito
+    cost <- 0
+    Para i de 0 até comprimento(path) - 2:
+        u <- path[i]
+        v <- path[i + 1]
+        cost <- cost + peso_da_aresta(G, u, v)
+    Retornar path, cost
 
-imprimir("Custo total:", custo)
+Função dijkstra_shortest_path(G, source, target):
+    Para cada vértice v em G:
+        dist[v] <- +infinito
+        prev[v] <- indefinido
+    dist[source] <- 0
+    Q <- conjunto de todos os vértices (fila de prioridade por dist)
 
+    Enquanto Q não vazio:
+        u <- extrair vértice em Q com menor dist[u]
+        Se u == target:
+            Interromper  # caminho mais curto encontrado
+        Para cada vizinho v de u:
+            alt <- dist[u] + peso_da_aresta(G, u, v)
+            Se alt < dist[v]:
+                dist[v] <- alt
+                prev[v] <- u
+                atualizar_prioridade_em_Q(v, dist[v])
 
-achar_caminho_mais_curto_e_peso(grafo, origem, destino)
-    d[], pi[] <- DIJKSTRA(grafo, origem)
-
-    if pi[destino] == NIL and destino != origem
-        então
-            retorna ([], ∞)   # sem caminho
-    fim if
-
-    caminho_mais_curto <- CONSTRUIR_CAMINHO(pi, origem, destino)
-
-    custo <- 0
-    para i de 0 até caminho_mais_curto.comprimento - 2:
-        u <- caminho_mais_curto[i]
-        v <- caminho_mais_curto[i+1]
-        custo <- custo + peso(u, v)
-    fim para
-
-    retorna caminho_mais_curto, custo
-fim achar_caminho_mais_curto_e_peso
-
-
-CONSTRUIR_CAMINHO(pi, origem, v)
-    caminho <- lista vazia
-    atual <- v
-    enquanto atual != NIL:
-        inserir atual no início de caminho
-        if atual == origem:
-            break
-        atual <- pi[atual]
-    fim enquanto
-
-    if caminho[0] != origem:
-        retorna []   # sem caminho válido
-    fim if
-
-    retorna caminho
-fim CONSTRUIR_CAMINHO
-
-
-DIJKSTRA(G, s)
-    INITIALIZE-SINGLE-SOURCE(G, s)
-    S <- ∅
-    Q <- V[G]   # fila (min-heap) por d[v]
-    enquanto Q != ∅:
-        u <- EXTRACT-MIN(Q)
-        S <- S ∪ {u}
-        para cada v ∈ Adj[u]:
-            RELAX(u, v, w)   # w(u,v) é o peso da aresta
-        fim para
-    fim enquanto
-    retorna d, pi
-fim DIJKSTRA
-
-
-RELAX(u, v, w)
-    if d[v] > d[u] + w(u, v)
-        então
-            d[v] <- d[u] + w(u, v)
-            pi[v] <- u
-            # se estiver usando um heap com chaves, atualizar a chave de v
-    fim if
-fim RELAX
-
-
-INITIALIZE-SINGLE-SOURCE(G, s)
-    para cada vértice v em V[G]:
-        d[v] <- ∞
-        pi[v] <- NIL
-    fim para
-    d[s] <- 0
-fim INITIALIZE-SINGLE-SOURCE
+    Se dist[target] == +infinito:
+        Retornar nulo  # não existe caminho
+    # Reconstruir caminho de source até target
+    path <- lista vazia
+    u <- target
+    Enquanto u indefinido:
+        inserir u no início de path
+        u <- prev[u]
+    Retornar path
