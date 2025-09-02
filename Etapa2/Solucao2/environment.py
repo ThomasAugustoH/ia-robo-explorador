@@ -45,7 +45,7 @@ class Environment:
         #    self.draw_only_robot_memory = self.wait_input('Do you want to draw only the map on the robot memory? [Y] OR [N]: ')
         #self.preloaded_map = self.wait_input('Do you want to use the default map? [Y] OR [N]: ')
 
-        self.should_draw_map = False
+        self.should_draw_map = True
         self.draw_only_robot_memory = False
         self.preloaded_map = False
 

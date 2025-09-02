@@ -3,7 +3,7 @@ from environment import Environment
 
 def main():
     environment = Environment()
-    total_passos, min_passos, max_passos, tentativas = 0, 999, 0, 1000
+    total_passos, min_passos, max_passos, tentativas = 0, 999, 0, 1
 
     for i in range(tentativas):
         passos = environment.run_simulation(10)
