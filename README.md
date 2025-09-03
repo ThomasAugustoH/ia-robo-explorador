@@ -3,7 +3,7 @@
 
 ## Etapa 2
 
-Solução para avaliação do professor -> Solucao1
+Solução para avaliação do professor -> Solucao1<br>
 Prompts do terminal: 
 - Do you want to draw the map? **[Y]** OR **[N]**:<br>
 *Mostrar mapa **[Y]** ou não **[N]***
