@@ -1,6 +1,6 @@
 # ia-robo-explorador
 
-***
+
 ## Etapa 2
 
 Solução para avaliação do professor -> Solucao1
@@ -16,7 +16,7 @@ Solução mais eficiente em média -> Solucao2
 
 
 
-***
-### Etapa 4 parte 2
+
+## Etapa 4 parte 2
 
 Rodando o programa: fechar a caixa do mapa para mostrar o próximo nó no caminho
