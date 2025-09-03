@@ -1,0 +1,199 @@
+FUNÇÃO iniciar_robo(no_inicial, mapa_ambiente) → NENHUM:
+INÍCIO
+    memoria_robo ← criar_grafo_vazio()
+    posicao_atual ← no_inicial
+    espacos_repetidos ← 0  
+    mapa_ambiente ← mapa_ambiente
+    caminho_atual ← lista_vazia()
+
+    adicionar_no(memoria_robo, posicao_atual, status='atual')
+    atualizar_vizinhos()   // corresponde a __update_neighbors()
+FIM
+
+FUNÇÃO mover() → boolean:
+INÍCIO
+    SE tamanho(caminho_atual) = 0 ENTÃO
+        buscar_proximo_caminho()
+    FIM SE
+
+    SE tamanho(caminho_atual) > 0 ENTÃO
+        mover_para(remover_primeiro(caminho_atual))
+        RETORNAR VERDADEIRO
+    SENÃO
+        RETORNAR FALSO
+    FIM SE
+FIM
+
+FUNÇÃO buscar_proximo_caminho() → NENHUM:
+INÍCIO
+    movimento ← VAZIO
+
+    PARA i DE 0 ATÉ 7 FAÇA
+        SE i < 4 ENTÃO
+            movimento ← obter_proximo_movimento(i, VERDADEIRO)
+        SENÃO
+            movimento ← obter_proximo_movimento(i - 4, FALSO)
+        FIM SE
+
+        SE movimento ≠ VAZIO ENTÃO
+            PARE
+        FIM SE
+    FIM PARA
+
+    SE movimento ≠ VAZIO ENTÃO
+        adicionar_fim(caminho_atual, movimento)
+    SENÃO
+        caminho_atual ← procurar_nos()
+    FIM SE
+FIM
+
+FUNÇÃO mover_para(no) → NENHUM:
+INÍCIO
+    PARA cada vizinho EM memoria_robo.vizinhos(posicao_atual) FAÇA
+        SE status_no[vizinho] = 'nao_visitado' ENTÃO
+            status_no[vizinho] ← 'prioridade'
+        FIM SE
+    FIM PARA
+
+    SE status_no[no] = 'visitado' ENTÃO
+        espacos_repetidos ← espacos_repetidos + 1
+    FIM SE
+
+    status_no[posicao_atual] ← 'visitado'
+    posicao_atual ← no
+    status_no[no] ← 'atual'
+    atualizar_vizinhos()
+FIM
+
+FUNÇÃO procurar_nos() → lista:
+INÍCIO
+    proximo ← encontrar_no_nao_visitado_mais_proximo()
+    caminho ← encontrar_caminho_para(proximo)
+    RETORNAR caminho
+FIM
+
+FUNÇÃO encontrar_no_nao_visitado_mais_proximo() → no:
+INÍCIO
+    fila ← criar_fila()
+    enfileirar(fila, (posicao_atual, 0))
+    pesquisados ← conjunto_com(posicao_atual)
+    no_nao_visitado ← VAZIO
+
+    ENQUANTO fila NÃO VAZIA FAÇA
+        (no_atual, distancia) ← desenfileirar(fila)
+
+        PARA cada vizinho EM memoria_robo.vizinhos(no_atual) FAÇA
+            SE vizinho NÃO ESTÁ EM pesquisados ENTÃO
+                adicionar(pesquisados, vizinho)
+
+                SE status_no[vizinho] = 'prioridade' ENTÃO
+                    RETORNAR vizinho
+                FIM SE
+
+                SE status_no[vizinho] = 'nao_visitado' E no_nao_visitado = VAZIO ENTÃO
+                    no_nao_visitado ← vizinho
+                FIM SE
+
+                enfileirar(fila, (vizinho, distancia + 1))
+            FIM SE
+        FIM PARA
+    FIM ENQUANTO
+
+    RETORNAR no_nao_visitado
+FIM
+
+FUNÇÃO encontrar_caminho_para(destino) → lista:
+INÍCIO
+    origem ← posicao_atual
+    fila ← criar_fila()
+    enfileirar(fila, origem)
+
+    predecessores ← mapa_com_todos_nos_valor(NULO)
+    visitados ← conjunto_com(origem)
+    caminho ← lista_vazia()
+    achou ← FALSO
+
+    ENQUANTO fila NÃO VAZIA FAÇA
+        atual ← desenfileirar(fila)
+
+        SE atual = destino ENTÃO
+            achou ← VERDADEIRO
+            SAIR DO LAÇO
+        FIM SE
+
+        PARA cada vizinho EM memoria_robo.vizinhos(atual) FAÇA
+            SE vizinho NÃO ESTÁ EM visitados ENTÃO
+                adicionar(visitados, vizinho)
+                predecessores[vizinho] ← atual
+                enfileirar(fila, vizinho)
+            FIM SE
+        FIM PARA
+    FIM ENQUANTO
+
+    SE achou ENTÃO
+        atual ← destino
+        ENQUANTO atual ≠ NULO FAÇA
+            inserir_inicio(caminho, atual)
+            atual ← predecessores[atual]
+        FIM ENQUANTO
+        remover(caminho, origem)
+    FIM SE
+
+    RETORNAR caminho
+FIM
+
+FUNÇÃO obter_proximo_movimento(lado, procurar_prioridade = FALSO) → tupla:
+INÍCIO
+    deslocamento_rotacao ← 2
+    anti_horario ← VERDADEIRO
+
+    lado ← (lado + deslocamento_rotacao) % 4
+
+    SE anti_horario ENTÃO
+        SE lado = 0 ENTÃO
+            lado ← 2
+        SENÃO SE lado = 2 ENTÃO
+            lado ← 0
+        FIM SE
+    FIM SE
+
+    ESCOLHA lado FAÇA
+        CASO 0:
+            RETORNAR obter_no_vizinho('Leste', procurar_prioridade)
+        CASO 1:
+            RETORNAR obter_no_vizinho('Sul', procurar_prioridade)
+        CASO 2:
+            RETORNAR obter_no_vizinho('Oeste', procurar_prioridade)
+        CASO 3:
+            RETORNAR obter_no_vizinho('Norte', procurar_prioridade)
+    FIM ESCOLHA
+FIM
+
+FUNÇÃO obter_no_vizinho(direcao, procurar_prioridade = FALSO) → tupla:
+INÍCIO
+    SE direcao = 'Leste' ENTÃO
+        dx, dy ← 1, 0
+    SENÃO SE direcao = 'Sul' ENTÃO
+        dx, dy ← 0, -1
+    SENÃO SE direcao = 'Oeste' ENTÃO
+        dx, dy ← -1, 0
+    SENÃO SE direcao = 'Norte' ENTÃO
+        dx, dy ← 0, 1 
+    FIM SE
+
+    proximo ← (posicao_atual.x + dx, posicao_atual.y + dy)
+
+    SE procurar_prioridade ENTÃO
+        SE proximo EXISTE EM memoria_robo E status_no[proximo] = 'prioridade' ENTÃO
+            RETORNAR proximo
+        SENÃO
+            RETORNAR VAZIO
+        FIM SE
+    SENÃO
+        SE proximo EXISTE EM memoria_robo E status_no[proximo] = 'nao_visitado' ENTÃO
+            RETORNAR proximo
+        SENÃO
+            RETORNAR VAZIO
+        FIM SE
+    FIM SE
+FIM

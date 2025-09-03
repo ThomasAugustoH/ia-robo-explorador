@@ -1,0 +1,42 @@
+ALGORITMO principal():
+    INÍCIO
+        lista_obstaculos ← criar_obstaculos(1)
+        caminho ← criar_caminho((0,9), (7,2), lista_obstaculos)
+    FIM
+
+FUNÇÃO criar_caminho(origem, destino, obstaculos) → lista:
+    INÍCIO
+        caminho ← encontrar_caminho(origem, destino)
+        caminho_colorido ← colorir_caminho(caminho, obstaculos)
+        RETORNAR caminho_colorido
+ FIM
+
+FUNÇÃO encontrar_caminho(origem, destino) → lista:
+    INÍCIO
+        arestas_bfs ← busca_em_largura(grafo, origem)
+        pais ← dicionário_vazio()
+        PARA CADA aresta (u, v) EM arestas_bfs FAÇA
+            pais[v] ← u
+        FIM PARA
+        caminho ← [destino]
+        ENQUANTO último_elemento(caminho) ≠ origem FAÇA
+            último ← último_elemento(caminho)
+            caminho.adicionar(pais[último])
+        FIM ENQUANTO
+        inverter(caminho)
+        RETORNAR caminho
+    FIM
+FUNÇÃO colorir_caminho(caminho, obstaculos) → lista:
+    INÍCIO
+        mapa_cores ← lista_vazia
+        PARA CADA nó EM todos_nós_do_grafo FAÇA
+            SE nó PERTENCE caminho ENTÃO
+                mapa_cores.adicionar(‘VERDE’)  // Verde para caminho
+            SENÃO SE nó PERTENCE obstaculos ENTÃO
+                mapa_cores.adicionar(‘AZUL’)  // Azul para obstáculos
+            SENÃO
+                mapa_cores.adicionar(‘CINZA’)  // Cinza para nós livres
+            FIM SE
+        FIM PARA
+        RETORNAR mapa_cores
+    FIM

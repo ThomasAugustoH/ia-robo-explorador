@@ -1,0 +1,26 @@
+A implementação do robô que sai de uma origem x e tenta chegar em um destino y, passando por terrenos diferentes (Normal com peso 1, Arenosa com peso 2 e Rochoso com peso 3), com o melhor caminho, levando em conta os pesos e a distância, trás uma solução bem simples e eficiente, utilizando grafos e um algoritmo chamado 'Dijkstra'.
+
+Primeiro o usuário define um GRID, que é o terreno onde o robô vai andar, e depois ele define uma origem e destino, feito isso o programa inicializa um grafo direcionado sem arestas e com n x n vértices, cada vértice com o seu peso definido no GRID inicial, após isso é feita a criação das arestas, de forma que cada aresta terá o peso do vértice de destino, para representar o terreno, exemplo:
+
+se o vértice A tem peso 1, e o robô quer sair do A para ir para um vértice B que tem peso 3, a aresta do AB terá peso 3, que seria a representação da dificuldade do terreno
+se fosse os mesmos vértices, mas em vez de ir do A para o B, fosse do B para o A, a aresta seria outra BA, que teria peso 1, por isso é um grafo direcionado, pois se fosse um grafo bidirecional, a aresta teria o mesmo peso
+
+Feito isso chamamos utilizamos o método 'shortest_path' que vem de uma biblioteca chamada NetworkX, que aceita como parâmetro uma variável 'method' que seria o método para achar este caminho mais curto, pois temos basicamente 2 opções muito sólidas:
+
+Bellman Ford - ideal para grafos com valores negativos
+Dijkstra - ideal para para grafos sem valores negativos (nosso caso)
+mas o Dijkstra é o default, então nem precisamos passá-lo que o NetworkX já usa ele por padrão, ai ele vai rodar um Dijkstra normal, que resumindo bastante calcula o valor mais curto para cada vértice a partir de um vértice inicial:
+
+ No grafo com vértices A,B,C e arestas A B=4, AC=8, BC=3, iniciando em A:
+Inicialmente: dist(A)=0, dist(B)=∞, dist(C)=∞.
+
+Processando A, atualizamos dist(B)=4 e dist(C)=8.
+
+Processando B, encontramos dist(C)=min(8,4+3)=7, melhorando o caminho até C.
+
+Resultado final: menor caminho de A até B custa 4, e de A até C custa 7 (via B).
+Aí depois de rodar o algoritmo ele pegar o vértice de destino inputado, pega o vértice anterior a ele definido pelo melhor caminho, ai pega o pai deste mesmo e vai até chegar na origem, guardando em um array de vértices, que ele nos retorna
+
+A partir daí um loop que começa assim:
+
+pega o vértice 0, e pega o pega o vértice  0 + 1, que seria o primeiro passo ali do nosso caminho, aí ele retorna o peso da aresta que tem como origem o vértice que tava na posição 0 e destino o vértice que tava na posição 0 + 1, e soma no custo do caminho, para termos controle posteriormente, aí ele itera mais 1, fazendo isso com os vértices da posição 1 ,  e 1 + 1, até chegar no destino final, feito isso retornaremos o caminho e o custo dele e exibimos.

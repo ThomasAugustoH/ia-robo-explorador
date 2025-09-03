@@ -1,0 +1,7 @@
+O agente robô que deve partir de um ponto inicial (xi ,yi) e chegar a um ponto destino (xf, yf), inicialmente em um ambiente vazio e posteriormente em um ambiente com obstáculos, almejando o menor caminho é implementado em torno do algoritmo de grafos busca em profundidade (DFS).
+
+A priori, o robô é modelado dentro de um ambiente representado como um grafo bidimensional, no qual cada posição da grade corresponde a um nó e as conexões representam os possíveis movimentos. A partir deste momento, é aplicado o algoritmo DFS que irá encontrar o melhor caminho para chegar ao destino 
+
+A lógica de inserção de obstáculos é feita de forma simples, removendo as arestas dos nós que correspondem a barreiras no ambiente. Dessa maneira, esses nós se tornam inacessíveis ao agente, e o algoritmo de busca de caminho passa automaticamente a contorná-los. Isso torna o modelo flexível, permitindo simulações em ambientes abertos ou restritos sem a necessidade de alterar a estrutura principal do grafo.
+
+Por fim, a visualização do grafo com o uso do matplotlib permite destacar a rota encontrada, os obstáculos e os espaços livres com cores distintas, facilitando a interpretação do resultado. Assim, a implementação mostra de forma clara como a lógica de grafos pode ser aplicada ao problema de navegação de robôs, combinando a construção do ambiente, a definição de restrições e a aplicação de um algoritmo de busca para encontrar o menor caminho possível.
