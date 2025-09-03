@@ -1,6 +1,7 @@
 # ia-robo-explorador
 
 ## Etapa 2
+
 Solução para avaliação do professor -> Solucao1
 Prompts do terminal: 
 - Do you want to draw the map? [Y] OR [N]:
@@ -15,4 +16,5 @@ Solução mais eficiente em média -> Solucao2
 
 
 ### Etapa 4 parte 2
+
 Rodando o programa: fechar a caixa do mapa para mostrar o próximo nó no caminho
