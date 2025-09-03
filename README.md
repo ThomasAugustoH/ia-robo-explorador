@@ -11,3 +11,8 @@ Prompts do terminal:
 *Utilizar mapa mostrado no exemplo do exercício [Y] ou usar um mapa aleatório [N]*
 
 Solução mais eficiente em média -> Solucao2
+
+
+
+### Etapa 4 parte 2
+Rodando o programa: fechar a caixa do mapa para mostrar o próximo nó no caminho
