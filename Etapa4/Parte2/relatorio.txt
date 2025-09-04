@@ -1,0 +1,5 @@
+Para percorrer o grid, o robô analisa passo a passo cada movimento. Para descobrir qual o próximo movimento a ser seguido, o robô avalia as casas vizinhas, e calcula qual delas é a mais eficiente de acordo com o peso da casa e a sua distância do alvo.
+
+Por exemplo, se dois nós vizinhos do atual tiverem a mesma distância do alvo, porém um deles ter custo 1 e o outro 2, será preferivel atravessar o caminho pelo nó de custo 1
+
+Dessa forma, o robô percorre nó a nó e o custo total já percorrido é incrementado com o custo gasto para atravessar o último lugar.
