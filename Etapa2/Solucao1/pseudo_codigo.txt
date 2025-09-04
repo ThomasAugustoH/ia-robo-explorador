@@ -7,7 +7,7 @@ INÍCIO
     caminho_atual ← lista_vazia()
 
     adicionar_no(memoria_robo, posicao_atual, status='atual')
-    atualizar_vizinhos()   // corresponde a __update_neighbors()
+    atualizar_vizinhos()
 FIM
 
 FUNÇÃO mover() → boolean:
