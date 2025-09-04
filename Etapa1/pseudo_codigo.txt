@@ -1,0 +1,42 @@
+ FUNÇÃO iniciar(grid, x, y) → NENHUM:
+    INÍCIO
+        self.grid ← grid
+        self.posicao ← (x, y)
+        self.direcao ← 1 
+    FIM
+
+FUNÇÃO obter_movimento_com_base_na_direcao() → tupla:
+    INÍCIO
+        (x, y) ← self.posicao
+
+        SE self.direcao = 1 ENTÃO
+            RETORNAR (x, y + 1)      
+        SENÃO SE self.direcao = 2 ENTÃO
+            RETORNAR (x + 1, y)      
+        SENÃO SE self.direcao = 3 ENTÃO
+            RETORNAR (x, y - 1) 
+        SENÃO
+            RETORNAR (x - 1, y) 
+        FIM SE
+    FIM
+
+FUNÇÃO pode_mover_frente() → boolean:
+    INÍCIO
+        (x, y) ← obter_movimento_com_base_na_direcao()
+
+        SE 0 ≤ x < tamanho(grid) E 0 ≤ y < tamanho(grid[0]) ENTÃO
+            RETORNAR VERDADEIRO
+        SENÃO
+            RETORNAR FALSO
+        FIM SE
+    FIM
+
+FUNÇÃO mover_frente() → NENHUM:
+    INÍCIO
+        self.posicao ← obter_movimento_com_base_na_direcao()
+    FIM
+
+FUNÇÃO rotacionar() → NENHUM:
+    INÍCIO
+        self.direcao ← self.direcao + 1
+    FIM
