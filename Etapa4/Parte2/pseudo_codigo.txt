@@ -25,4 +25,4 @@ Função calculate_next_node(G, current_node, target):
 Função distance_from_target(G, current_node, target, node):
     distance <- |node(x) - target(x)| + |node(y) - target(y)|
     wight <- peso_da_aresta(G, current_node, node)
-    Retornar distance + wight
+    Retornar distance + weight
